@@ -11,7 +11,7 @@ import com.learnify.backend.masterservice.repository.StudentRepository;
 import com.learnify.backend.masterservice.repository.TeacherRepository;
 import com.learnify.backend.security.dto.AuthenticationRequest;
 import com.learnify.backend.security.dto.AuthenticationResponse;
-import com.learnify.backend.security.dto.StudentRegisterRequest;
+import com.learnify.backend.student.dto.StudentRegistrationRequest;
 import com.learnify.backend.teacher.dto.TeacherRegisterRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class AuthenticationService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
 
-    public BaseResponse<AuthenticationResponse> registerStudent(StudentRegisterRequest studentRegisterRequest) {
+    public BaseResponse<AuthenticationResponse> registerStudent(StudentRegistrationRequest studentRegisterRequest) {
         log.info("Registering student: {}", studentRegisterRequest.getUsername());
 
         try{

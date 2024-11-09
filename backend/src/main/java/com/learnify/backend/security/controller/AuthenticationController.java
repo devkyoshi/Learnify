@@ -3,8 +3,8 @@ package com.learnify.backend.security.controller;
 import com.learnify.backend.common.BaseResponse;
 import com.learnify.backend.security.dto.AuthenticationRequest;
 import com.learnify.backend.security.dto.AuthenticationResponse;
-import com.learnify.backend.security.dto.StudentRegisterRequest;
 import com.learnify.backend.security.service.AuthenticationService;
+import com.learnify.backend.student.dto.StudentRegistrationRequest;
 import com.learnify.backend.teacher.dto.TeacherRegisterRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +22,11 @@ public class AuthenticationController {
 
     @PostMapping("/register/student")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<BaseResponse<AuthenticationResponse>>  registerStudent(@RequestBody StudentRegisterRequest studentRegisterRequest) {
+    public ResponseEntity<BaseResponse<AuthenticationResponse>>  registerStudent(@RequestBody StudentRegistrationRequest studentRegisterRequest) {
         log.info("Registering student: {}", studentRegisterRequest.getUsername());
         var response = authenticationService.registerStudent(studentRegisterRequest);
 
-        return response.success() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
+        return response.success() ? ResponseEntity.status(HttpStatus.CREATED).body(response) : ResponseEntity.badRequest().body(response);
     }
     @PostMapping("/register/teacher")
     @ResponseStatus(HttpStatus.CREATED)
@@ -34,7 +34,7 @@ public class AuthenticationController {
         log.info("Registering teacher: {}", teacherRegisterRequest.getUsername());
         var response = authenticationService.registerTeacher(teacherRegisterRequest);
 
-        return response.success() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
+        return response.success() ? ResponseEntity.status(HttpStatus.CREATED).body(response) : ResponseEntity.badRequest().body(response);
     }
 
     @PostMapping("/login")
