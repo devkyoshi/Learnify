@@ -1,5 +1,6 @@
 package com.learnify.backend.security.controller;
 
+import com.learnify.backend.common.BaseResponse;
 import com.learnify.backend.security.dto.AuthenticationRequest;
 import com.learnify.backend.security.dto.AuthenticationResponse;
 import com.learnify.backend.security.dto.StudentRegisterRequest;
@@ -9,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,21 +22,26 @@ public class AuthenticationController {
 
     @PostMapping("/register/student")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AuthenticationResponse> registerStudent(@RequestBody StudentRegisterRequest studentRegisterRequest) {
+    public ResponseEntity<BaseResponse<AuthenticationResponse>>  registerStudent(@RequestBody StudentRegisterRequest studentRegisterRequest) {
         log.info("Registering student: {}", studentRegisterRequest.getUsername());
-        return ResponseEntity.ok(authenticationService.registerStudent(studentRegisterRequest));
+        var response = authenticationService.registerStudent(studentRegisterRequest);
+
+        return response.success() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
     }
     @PostMapping("/register/teacher")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AuthenticationResponse> registerTeacher(@RequestBody TeacherRegisterRequest teacherRegisterRequest) {
+    public ResponseEntity<BaseResponse<AuthenticationResponse>> registerTeacher(@RequestBody TeacherRegisterRequest teacherRegisterRequest) {
         log.info("Registering teacher: {}", teacherRegisterRequest.getUsername());
-        return ResponseEntity.ok(authenticationService.registerTeacher(teacherRegisterRequest));
+        var response = authenticationService.registerTeacher(teacherRegisterRequest);
+
+        return response.success() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
     }
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<AuthenticationResponse> login (@RequestBody AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<BaseResponse<AuthenticationResponse>>login (@RequestBody AuthenticationRequest authenticationRequest) {
         log.info("Logging in user: {}", authenticationRequest.getUsername());
-        return ResponseEntity.ok(authenticationService.login(authenticationRequest));
+        var response =  authenticationService.login(authenticationRequest);
+        return response.success() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
     }
 }
