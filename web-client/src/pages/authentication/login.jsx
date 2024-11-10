@@ -1,14 +1,40 @@
-import React from "react";
+import { useState } from "react";
 import { Input, Button, Typography } from "@material-tailwind/react";
 import FormDialogTemplate from "@components/templates/form-dialog";
 import SignUpCard from "@pages/authentication/signup";
+import toast from "react-hot-toast";
+import { login } from "../../controllers/auth.controller";
 
 export default function LoginCard({ isOpen, onClose }) {
-  const [openSignUp, setOpenSignUp] = React.useState(false);
+  const [openSignUp, setOpenSignUp] = useState(false);
+  const [loginData, setLoginData] = useState({
+    username: "",
+    password: "",
+  });
+
+  const handleLogin = async () => {
+    if (!loginData.username || !loginData.password) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+
+    const isLoginSuccess = await login(loginData);
+
+    if (isLoginSuccess) {
+      onClose();
+    }
+  };
 
   const handleSignUpOpen = () => {
     onClose();
     setOpenSignUp(true);
+  };
+
+  const handleInputChange = (e) => {
+    setLoginData({
+      ...loginData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   return (
@@ -40,9 +66,11 @@ export default function LoginCard({ isOpen, onClose }) {
                   User Name
                 </Typography>
                 <Input
+                  id="username"
+                  name="username"
+                  onChange={handleInputChange}
                   variant="outlined"
                   label="Username"
-                  id="username"
                   type="text"
                   color="blue"
                   className="text-sm"
@@ -53,9 +81,11 @@ export default function LoginCard({ isOpen, onClose }) {
                   Password
                 </Typography>
                 <Input
+                  id="password"
+                  name="password"
+                  onChange={handleInputChange}
                   variant="outlined"
                   label="Password"
-                  id="password"
                   type="password"
                   color="blue"
                   className="text-sm"
@@ -66,6 +96,7 @@ export default function LoginCard({ isOpen, onClose }) {
               </div>
               <div className="w-full flex flex-col gap-2">
                 <Button
+                  onClick={handleLogin}
                   variant="filled"
                   fullWidth
                   className="mt-4 bg-secondary shadow-lg text-white"

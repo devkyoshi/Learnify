@@ -50,12 +50,9 @@ public class SecurityConfig{
 
         //Explicitly allow the frontend origin
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("*"); //TODO: Change this to the frontend origin
 
         //you can also add specific methods, headers, as needed
-        config.addAllowedHeader("http://localhost:5173");
-
-
+        config.addAllowedOrigin("http://localhost:5173");
         config.addAllowedHeader("*"); //Allow all headers
         config.addAllowedMethod("*"); //Allow all methods (GET, POST, PUT, DELETE, etc.)
 
@@ -64,10 +61,10 @@ public class SecurityConfig{
         return source;
     }
 
-    @Bean
-    public CorsFilter corsFilter() {
-        return new CorsFilter();
-    }
+//    @Bean
+//    public CorsFilter corsFilter() {
+//        return new CorsFilter();
+//    }
 
 
 }

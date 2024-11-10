@@ -6,6 +6,7 @@ import {
   CardHeader,
   Typography,
 } from "@material-tailwind/react";
+import { createToast } from "../../utils/helper_functions";
 
 export const Home = () => {
   return (
@@ -19,6 +20,7 @@ export const Home = () => {
         <Typography className={"text-primary"} variant={"h1"}>
           Empowering Lifelong Learning
         </Typography>
+
         <Typography className={"text-secondary"} variant={"h2"}>
           &quot;For Every Student From Anywhere&quot;
         </Typography>
