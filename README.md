@@ -1,6 +1,6 @@
 ﻿# Learinify - E-Learning Platform
 
-Learnify is a comprehensive E-Learning platform designed to provide a seamless educational experience. Built with a professional, modular architecture using React and Spring Boot, Learnify features a robust user authentication system with JWT, ensuring secure access. The platform is structured for scalability and future integration with OAuth, supporting a modern and user-friendly learning environment for students and educators.
+**Learnify** is a comprehensive **E-Learning platform** designed to provide a seamless educational experience. Built with a professional, modular architecture using **React** and **Spring Boot**, Learnify features a robust user authentication system with JWT, ensuring secure access. The platform is structured for scalability and future integration with OAuth, supporting a modern and user-friendly learning environment for students and educators.
 
 ## Table of Contents
 
@@ -23,7 +23,14 @@ Learnify is a comprehensive E-Learning platform designed to provide a seamless e
 
 ## Technologies Used
 
-- **Frontend**: React, Redux, Axios, Tailwind CSS, Material Tailwind
+- **Frontend**:
+
+  - Web Client: (React With Vite Framework)
+
+    - Styles: **Tailwind** , **Material Tailwind** for comprehensive UI components
+    - **React Hot Toast** for Toast Notifications/Alerts.
+    - **Axios** for Sending API requests
+
 - **Backend**: Spring Boot, Spring Security, JPA, Hibernate
 - **Database**: PostgreSQL (or MySQL)
 - **Testing**: JUnit, Mockito, Spring Security Test
@@ -42,7 +49,7 @@ Before you begin, ensure you have met the following requirements:
 
 ### Installation
 
-1. Clone the repository: 
+1. Clone the repository:
 
 ```bash
 git clone git@github.com:DevAshiZ/Learnify.git
@@ -70,14 +77,14 @@ spring.datasource.password=your-password
 
 5. Run the Spring Boot application:
 
-```bash 
+```bash
 mvn spring-boot:run
 ```
 
-6. Navigate to the `frontend` directory:
+6. Navigate to the `web-client` directory:
 
 ```bash
-cd frontend
+cd web-client
 ```
 
 7. Install the dependencies:
@@ -89,16 +96,19 @@ npm install
 8. Start the React application:
 
 - Development mode:
+
 ```bash
 npm run dev
 ```
 
 - Production mode:
+
 ```bash
 npm start
 ```
 
-Properties file: 
+Properties file:
+
 ```properties
 # Application Details
 spring.application.name=learnify
@@ -138,4 +148,3 @@ To run the tests, execute the following command:
 ```bash
 mvn test
 ```
-

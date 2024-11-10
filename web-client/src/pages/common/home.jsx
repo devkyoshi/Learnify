@@ -6,33 +6,28 @@ import {
   CardHeader,
   Typography,
 } from "@material-tailwind/react";
-import { createToast } from "../../utils/helper_functions";
 
 export const Home = () => {
   return (
     <div className={"w-full"}>
       {/* Hero section */}
-      <div
-        className={
-          "flex flex-col items-center justify-center pt-20 bg-gray-100 pb-10"
-        }
-      >
-        <Typography className={"text-primary"} variant={"h1"}>
+      <div className="flex flex-col items-center justify-center pt-20 pb-10 bg-gray-100 px-4">
+        <Typography className="text-primary text-4xl md:text-5xl font-bold text-center">
           Empowering Lifelong Learning
         </Typography>
 
-        <Typography className={"text-secondary"} variant={"h2"}>
+        <Typography className="text-secondary text-xl md:text-2xl mt-4 text-center font-semibold">
           &quot;For Every Student From Anywhere&quot;
         </Typography>
-        <Typography
-          className={"mt-2 text-sm text-center max-w-lg mx-auto text-secondary"}
-        >
+
+        <Typography className="mt-2  text-sm text-center max-w-lg mx-auto text-secondary md:text-sm lg:text-sm">
           Discover a world of opportunities with Learnify. Whether you're here
           to learn new skills or inspire others, our platform provides the
           resources, guidance, and community you need to succeed. Join us and
           take the next step toward reaching your goals.
         </Typography>
-        <Button className={"mt-5 rounded-full bg-primary"}>
+
+        <Button className="mt-5 rounded-full bg-primary md:px-8 px-8 py-2 text-white text-sm md:text-base">
           Start learning
         </Button>
       </div>

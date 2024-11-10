@@ -60,11 +60,4 @@ public class SecurityConfig{
         source.registerCorsConfiguration("/**", config); //Apply this configuration to all routes
         return source;
     }
-
-//    @Bean
-//    public CorsFilter corsFilter() {
-//        return new CorsFilter();
-//    }
-
-
 }
