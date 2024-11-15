@@ -6,10 +6,16 @@ import {
   CardHeader,
   Typography,
 } from "@material-tailwind/react";
+import ImageUploader from "@components/imageUpload.jsx";
 
 export const Home = () => {
   return (
     <div className={"w-full"}>
+
+        <ImageUploader/>
+
+
+
       {/* Hero section */}
       <div className="flex flex-col items-center justify-center pt-20 pb-10 bg-gray-100 px-4">
         <Typography className="text-primary text-4xl md:text-5xl font-bold text-center">

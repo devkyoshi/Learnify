@@ -2,14 +2,15 @@ import React from "react";
 import FormDialogTemplate from "@components/templates/form-dialog";
 import { Button, Input, Typography } from "@material-tailwind/react";
 import LoginCard from "./login";
+import propTypes from "prop-types";
 
 export default function SignUpCard({ isOpen, onClose }) {
   const [openLogin, setOpenLogin] = React.useState(false);
 
-  const handleLoginOpen = () => {
-    onClose();
-    setOpenLogin(true);
-  };
+  // const handleLoginOpen = () => {
+  //   onClose();
+  //   setOpenLogin(true);
+  // };
 
   return (
     <div>
@@ -131,17 +132,17 @@ export default function SignUpCard({ isOpen, onClose }) {
               Sign Up
             </Button>
 
-            <div className="flex justify-center mt-4">
-              <Typography className="text-sm text-secondary">
-                Already have an account?{" "}
-                <strong
-                  onClick={handleLoginOpen}
-                  className="text-primary font-semibold cursor-pointer"
-                >
-                  Sign In
-                </strong>
-              </Typography>
-            </div>
+            {/*<div className="flex justify-center mt-4">*/}
+            {/*  <Typography className="text-sm text-secondary">*/}
+            {/*    Already have an account?{" "}*/}
+            {/*    <strong*/}
+            {/*      onClick={handleLoginOpen}*/}
+            {/*      className="text-primary font-semibold cursor-pointer"*/}
+            {/*    >*/}
+            {/*      Sign In*/}
+            {/*    </strong>*/}
+            {/*  </Typography>*/}
+            {/*</div>*/}
           </div>
         </div>
       </FormDialogTemplate>
@@ -153,3 +154,8 @@ export default function SignUpCard({ isOpen, onClose }) {
     </div>
   );
 }
+
+SignUpCard.propTypes = {
+  isOpen: propTypes.bool.isRequired,
+  onClose: propTypes.func.isRequired,
+};

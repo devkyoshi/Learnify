@@ -3,7 +3,8 @@ import { Input, Button, Typography } from "@material-tailwind/react";
 import FormDialogTemplate from "@components/templates/form-dialog";
 import SignUpCard from "@pages/authentication/signup";
 import toast from "react-hot-toast";
-import { login } from "../../controllers/auth.controller";
+import { login } from "@/controllers/auth.controller.js";
+import PropTypes from "prop-types";
 
 export default function LoginCard({ isOpen, onClose }) {
   const [openSignUp, setOpenSignUp] = useState(false);
@@ -120,7 +121,7 @@ export default function LoginCard({ isOpen, onClose }) {
             </div>
             <div className="mt-4 flex justify-center">
               <Typography className="text-xs md:text-sm text-secondary">
-                Don't have an account?{" "}
+                Don&#39;t have an account?{" "}
                 <strong
                   onClick={handleSignUpOpen}
                   className="font-bold text-secondary hover:text-primary cursor-pointer"
@@ -137,4 +138,8 @@ export default function LoginCard({ isOpen, onClose }) {
       )}
     </div>
   );
+}
+LoginCard.propTypes = {
+    isOpen: PropTypes.bool,
+    onClose: PropTypes.func,
 }
