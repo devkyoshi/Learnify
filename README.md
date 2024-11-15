@@ -8,6 +8,7 @@
 - [Technologies Used](#technologies-used)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
+- [Folder Structure](#folder-structure)
 - [API Documentation](#api-documentation)
 - [Testing](#testing)
 
@@ -32,7 +33,7 @@
     - **Axios** for Sending API requests
 
 - **Backend**: Spring Boot, Spring Security, JPA, Hibernate
-- **Database**: PostgreSQL (or MySQL)
+- **Database**: PostgreSQL (or MySQL), Cloudinary (for file storage)
 - **Testing**: JUnit, Mockito, Spring Security Test
 - **Deployment**: Docker (optional), AWS S3 (for file storage)
 
@@ -67,45 +68,7 @@ cd backend
 CREATE DATABASE learnify;
 ```
 
-4. Update the database configuration in `src/main/resources/application.properties`:
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/learnify
-spring.datasource.username=your-username
-spring.datasource.password=your-password
-```
-
-5. Run the Spring Boot application:
-
-```bash
-mvn spring-boot:run
-```
-
-6. Navigate to the `web-client` directory:
-
-```bash
-cd web-client
-```
-
-7. Install the dependencies:
-
-```bash
-npm install
-```
-
-8. Start the React application:
-
-- Development mode:
-
-```bash
-npm run dev
-```
-
-- Production mode:
-
-```bash
-npm start
-```
+4. Update the properties configuration in `src/main/resources/application.properties`:
 
 Properties file:
 
@@ -133,9 +96,122 @@ jwt.secret=<your-encoded-secret>
 
 ```
 
+5. Run the Spring Boot application:
+
+```bash
+mvn spring-boot:run
+```
+
+6. Navigate to the `web-client` directory:
+
+```bash
+cd web-client
+```
+
+7. Create a new `.env` file:
+
+```bash
+touch .env
+```
+8. Add the following environment variables to the `.env` file:
+
+```properties
+VITE_REACT_CLOUDINARY_API_KEY=<<your-cloudinary-api-key>>
+VITE_REACT_CLOUDINARY_API_SECRET=<<your-cloudinary-api-secret>>
+VITE_REACT_CLOUDINARY_CLOUD_NAME=<<your-cloudinary-cloud-name>>
+```
+
+8. Install the dependencies:
+
+```bash
+npm install
+```
+
+9. Start the React application:
+
+- Development mode:
+
+```bash
+npm run dev
+```
+
+- Production mode:
+
+```bash
+npm start
+```
+
 ## Usage
 
 To use the application, navigate to `http://localhost:3000` in your browser.
+
+## Folder Structure
+
+```bash
+
+learnify
+├── backend
+│   └── src
+│       ├── main
+│       │   ├── java
+│       │   │    com.learnify.backend
+│       │   │       ├── admin
+│       │   │       │     ├── controller
+│       │   │       │     ├── dao
+│       │   │       │     ├── dto
+│       │   │       │     ├── repository
+│       │   │       │     └── service
+│       │   │       ├── common
+│       │   │       │     ├── constants
+│       │   │       │     ├── exceptions
+│       │   │       │     ├── BaseController.java
+│       │   │       │     └── BaseResponse.java
+│       │   │       ├── masterservice
+│       │   │       │     ├── repository
+│       │   │       │     ├── dao
+│       │   │       │     ├── MasterService.java
+│       │   │       │     └── MasterServiceImpl.java
+│       │   │       ├── security
+│       │   │       │     ├── config
+│       │   │       │     ├── dto
+│       │   │       │     ├── controller
+│       │   │       │     └── service
+│       │   │       ├── student
+│       │   │       │     ├── controller
+│       │   │       │     └── dto
+│       │   │       └── teacher
+│       │   │             ├── controller
+│       │   │             └── dto
+│       │   │    
+│       │   └── resources
+│       │       ├── static
+│       │       ├── templates
+│       │       └── application.properties
+│       └── test
+│          
+│                         
+└── web-client
+    ├── index.html
+    ├── package.json
+    ├── vite.config.js
+    ├── tailwind.config.js
+    ├── postcss.config.js
+    ├── .env
+    └── src
+        ├── assets
+        │   ├── icons
+        │   └── images
+        ├── components
+        │   └── templates
+        ├── pages
+        │   ├── authentication
+        │   ├── privateRoute.jsx
+        │   └── common
+        ├── utils
+        └── controllers
+
+
+```
 
 ## API Documentation
 

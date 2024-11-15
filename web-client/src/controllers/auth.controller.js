@@ -4,7 +4,6 @@ import { createToast } from "../utils/helper_functions";
 
 export const login = async (loginData) => {
   try {
-    // Call the createToast function and pass the API request with messages
     const response = await createToast(api.post("/user/login", loginData), {
       loading: "Logging in...",
       success: (response) => response?.data?.message || "Login successful!",

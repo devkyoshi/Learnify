@@ -1,7 +1,6 @@
 import FormDialogTemplate from "@components/templates/form-dialog";
 import student from "@assets/images/student-default.jpg";
 import teacher from "@assets/images/teacher-default.jpg";
-
 import propTypes from "prop-types";
 import {
   Avatar,
@@ -18,6 +17,7 @@ import {
   registerTeacher,
 } from "@/controllers/auth.controller.js";
 import toast from "react-hot-toast";
+import {ERROR_MESSAGES} from "@config/constants.js";
 
 export default function SignUpCard({ isOpen, onClose }) {
   const nextStep = () =>
@@ -57,12 +57,12 @@ export default function SignUpCard({ isOpen, onClose }) {
 
   const handleUserRegistration = async () => {
     if (!checkUserDetails()) {
-      toast.error("Please fill all the fields");
+      toast.error(ERROR_MESSAGES.EMPTY_FIELDS);
       return;
     }
 
     if (registrationData.password !== registrationData.confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error(ERROR_MESSAGES.PASSWORD_MISMATCH);
       return;
     }
 
@@ -73,7 +73,7 @@ export default function SignUpCard({ isOpen, onClose }) {
   };
 
   const registerUserByType = async (userType, registrationData) => {
-    console.log("Submitted Data:", registrationData);
+
     if (userType === "student") {
       return await registerStudent(registrationData);
     } else if (userType === "teacher") {
@@ -87,7 +87,6 @@ export default function SignUpCard({ isOpen, onClose }) {
       ...registrationData,
       [e.target.name]: e.target.value,
     });
-    console.log(registrationData);
   };
 
   const steps = [
@@ -121,7 +120,7 @@ export default function SignUpCard({ isOpen, onClose }) {
             onStepClick={setCurrentStep}
           />
         </div>
-        {/* Fixed Size Container for Step Content */}
+
         <div className="flex-grow p-4 overflow-auto flex justify-center items-center">
           <div className="w-[850px] h-[300px] flex justify-center items-center">
             {steps[currentStep]}
@@ -133,11 +132,11 @@ export default function SignUpCard({ isOpen, onClose }) {
         {/* Navigation Buttons */}
         <div className="flex justify-between p-4">
           <div className="h-10">
-            {currentStep !== 0 && <Button onClick={prevStep}>Back</Button>}
+            {currentStep !== 0 && <Button variant={"outlined"} className={'w-52'} onClick={prevStep}>Back</Button>}
           </div>
           <div className="h-10">
             {currentStep < steps.length - 1 && currentStep !== 0 && (
-              <Button onClick={nextStep}>Next</Button>
+              <Button className={'w-52'} onClick={nextStep}>Next</Button>
             )}
           </div>
         </div>
@@ -292,6 +291,7 @@ const Submission = ({ inputChangeFunction, register, registrationData }) => {
             label={"Password"}
           />
           <Input
+            name={"confirmPassword"}
             value={registrationData.confirmPassword}
             onChange={inputChangeFunction}
             type={"password"}

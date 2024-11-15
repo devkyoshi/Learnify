@@ -1,4 +1,3 @@
-import React from "react";
 import { getUser } from "../utils/cookie_utils";
 import { Navigate, Outlet } from "react-router-dom";
 
