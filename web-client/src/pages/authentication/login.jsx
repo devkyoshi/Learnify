@@ -126,7 +126,7 @@ export default function LoginCard({ isOpen, onClose }) {
                   onClick={handleSignUpOpen}
                   className="font-bold text-secondary hover:text-primary cursor-pointer"
                 >
-                  Sign Up
+                  Sign up
                 </strong>
               </Typography>
             </div>
@@ -140,6 +140,6 @@ export default function LoginCard({ isOpen, onClose }) {
   );
 }
 LoginCard.propTypes = {
-    isOpen: PropTypes.bool,
-    onClose: PropTypes.func,
-}
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+};

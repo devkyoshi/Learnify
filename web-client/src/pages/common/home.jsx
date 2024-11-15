@@ -6,16 +6,12 @@ import {
   CardHeader,
   Typography,
 } from "@material-tailwind/react";
-import ImageUploader from "@components/imageUpload.jsx";
+import PropTypes from "prop-types";
+
 
 export const Home = () => {
   return (
     <div className={"w-full"}>
-
-        <ImageUploader/>
-
-
-
       {/* Hero section */}
       <div className="flex flex-col items-center justify-center pt-20 pb-10 bg-gray-100 px-4">
         <Typography className="text-primary text-4xl md:text-5xl font-bold text-center">
@@ -27,7 +23,7 @@ export const Home = () => {
         </Typography>
 
         <Typography className="mt-2  text-sm text-center max-w-lg mx-auto text-secondary md:text-sm lg:text-sm">
-          Discover a world of opportunities with Learnify. Whether you're here
+          Discover a world of opportunities with Learnify. Whether you&#39;re here
           to learn new skills or inspire others, our platform provides the
           resources, guidance, and community you need to succeed. Join us and
           take the next step toward reaching your goals.
@@ -90,3 +86,10 @@ const JoinUsCards = ({ image, topic, details, button }) => {
     </Card>
   );
 };
+
+JoinUsCards.propTypes = {
+    image: PropTypes.string,
+    topic: PropTypes.string,
+    details: PropTypes.string,
+    button: PropTypes.string,
+}

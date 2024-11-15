@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 
 import axios from "axios";
-
+import {ERROR_MESSAGES} from "@config/constants.js";
 
 const cloudName = import.meta.env.VITE_REACT_CLOUDINARY_CLOUD_NAME;
 
@@ -14,13 +14,16 @@ export const uploadImageToCloudinary = async (file) => {
     formData.append("upload_preset", "react-learnify");
 
     try {
-        const response = await axios.post(cloudinaryURL, formData);  // Awaiting the request
-
-        console.log("Cloudinary response:", response);
-
+        const response = await axios.post(cloudinaryURL, formData);
         return response.data.secure_url;
     } catch (error) {
-        toast.error("An error occurred while uploading image");
+        toast.error(ERROR_MESSAGES.UPLOAD_IMAGE_ERROR, {
+            style: {
+                borderRadius: "10px",
+                background: "#333",
+                color: "#fff",
+            }
+        });
         console.error("Cloudinary upload error:", error);
         return null;
     }

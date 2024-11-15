@@ -1,5 +1,6 @@
 import { UilMultiply } from "@iconscout/react-unicons";
 import { Card, IconButton } from "@material-tailwind/react";
+import propTypes from "prop-types";
 
 export default function FormDialogTemplate({ isOpen, onClose, children }) {
   const handleClickOutside = (e) => {
@@ -33,4 +34,11 @@ export default function FormDialogTemplate({ isOpen, onClose, children }) {
       )}
     </>
   );
+}
+
+
+FormDialogTemplate.propTypes = {
+    isOpen: propTypes.bool.isRequired,
+    onClose: propTypes.func.isRequired,
+    children: propTypes.node.isRequired,
 }
