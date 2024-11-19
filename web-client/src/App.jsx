@@ -3,8 +3,9 @@ import { Home } from "./pages/common/home.jsx";
 import { NavigationBar } from "./components/navigation_bar.jsx";
 import { Toaster } from "react-hot-toast";
 import { PrivateRoute } from "./pages/privateRoute.jsx";
-import { TeacherProfile } from "./pages/teacherProfile.jsx";
+import { TeacherProfile } from "@pages/teacher/teacherProfile.jsx";
 import { Footer } from "./components/footer.jsx";
+import {StudentProfile} from "@pages/student/studentProfile.jsx";
 
 const App = () => {
   return (
@@ -15,7 +16,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route element={<PrivateRoute />}>
-          <Route path="/profile" element={<TeacherProfile />} />
+          <Route path="/teacher-profile" element={<TeacherProfile />} />
+            <Route path="/student-profile" element={<StudentProfile />} />
         </Route>
       </Routes>
       <Footer />

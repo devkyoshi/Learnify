@@ -19,6 +19,7 @@ import LoginCard from "@pages/authentication/login";
 import { getUser } from "../utils/cookie_utils";
 import defaultProfile from "@assets/images/default_profile.jpg";
 import { logout } from "../controllers/auth.controller";
+import {useNavigate} from "react-router-dom";
 
 const profileMenu = [
   { title: "Profile", icon: <UilUser size={20} /> },
@@ -27,6 +28,7 @@ const profileMenu = [
 ];
 
 export const NavigationBar = () => {
+  const navigate = useNavigate();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const user = getUser();
@@ -92,7 +94,9 @@ export const NavigationBar = () => {
               <div className="absolute top-16 right-4 w-48 bg-white rounded-lg shadow-lg p-2">
                 {profileMenu.map((menu) => (
                   <div
-                    onClick={menu.title === "Logout" ? handleLogout : null}
+                    onClick={menu.title === "Logout" ? handleLogout
+                        : (menu.title === "Profile" && user.role === 'STUDENT') ? () => navigate("/student-profile")
+                            : (menu.title === "Profile" && user.role === 'TEACHER') ? () => navigate("/teacher-profile") : () => {}}
                     key={menu.title}
                     className=" flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer rounded-lg hover:text-primary text-secondary "
                   >

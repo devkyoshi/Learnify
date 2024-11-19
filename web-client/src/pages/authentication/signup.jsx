@@ -57,12 +57,22 @@ export default function SignUpCard({ isOpen, onClose }) {
 
   const handleUserRegistration = async () => {
     if (!checkUserDetails()) {
-      toast.error(ERROR_MESSAGES.EMPTY_FIELDS);
+      toast.error(ERROR_MESSAGES.EMPTY_FIELDS, { style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        }});
       return;
     }
 
     if (registrationData.password !== registrationData.confirmPassword) {
-      toast.error(ERROR_MESSAGES.PASSWORD_MISMATCH);
+      toast.error(ERROR_MESSAGES.PASSWORD_MISMATCH,{
+        style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#fff',
+        }
+      });
       return;
     }
 
