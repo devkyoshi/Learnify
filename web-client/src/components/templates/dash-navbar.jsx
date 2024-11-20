@@ -10,7 +10,7 @@ const navLinks = [
 
 export const DashNavbar = () => {
     return (
-        <div className={'bg-primaryLight h-14 w-full flex justify-between items-center'}>
+        <div className={'ml-2 bg-primaryLight h-14 w-full flex justify-between items-center'}>
             <div className={'flex gap-4'}>
                 <div className={'flex gap-4'}>
                     {navLinks.map((link, index) => (
