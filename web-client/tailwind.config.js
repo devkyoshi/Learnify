@@ -6,7 +6,11 @@ module.exports = withMT({
     extend: {
       colors:{
         primary: COLORS.primary,
+        primaryDark: COLORS.primaryDark,
+        primaryLight: COLORS.primaryLight,
         secondary: COLORS.secondary,
+        secondaryDark: COLORS.secondaryDark,
+        purple: COLORS.purple,
         white: COLORS.white,
         black: COLORS.black,
         grey: COLORS.grey,

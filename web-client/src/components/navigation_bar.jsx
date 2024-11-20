@@ -22,7 +22,7 @@ import { logout } from "../controllers/auth.controller";
 import {useNavigate} from "react-router-dom";
 
 const profileMenu = [
-  { title: "Profile", icon: <UilUser size={20} /> },
+  { title: "Dashboard", icon: <UilUser size={20} /> },
   { title: "Settings", icon: <UilSetting size={20} /> },
   { title: "Logout", icon: <UilSignout size={20} /> },
 ];
@@ -95,8 +95,8 @@ export const NavigationBar = () => {
                 {profileMenu.map((menu) => (
                   <div
                     onClick={menu.title === "Logout" ? handleLogout
-                        : (menu.title === "Profile" && user.role === 'STUDENT') ? () => navigate("/student-profile")
-                            : (menu.title === "Profile" && user.role === 'TEACHER') ? () => navigate("/teacher-profile") : () => {}}
+                        : ((menu.title === "Dashboard" && user.role === "TEACHER") ? () => navigate("/teacher-dashboard")
+                        : ((menu.title === "Dashboard" && user.role === "STUDENT") ? () => navigate("/student-dashboard") : null))}
                     key={menu.title}
                     className=" flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer rounded-lg hover:text-primary text-secondary "
                   >

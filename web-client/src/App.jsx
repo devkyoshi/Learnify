@@ -3,26 +3,39 @@ import { Home } from "./pages/common/home.jsx";
 import { NavigationBar } from "./components/navigation_bar.jsx";
 import { Toaster } from "react-hot-toast";
 import { PrivateRoute } from "./pages/privateRoute.jsx";
-import { TeacherProfile } from "@pages/teacher/teacherProfile.jsx";
+import { TeacherDashboard } from "@pages/teacher/teacher_dashboard.jsx";
 import { Footer } from "./components/footer.jsx";
-import {StudentProfile} from "@pages/student/studentProfile.jsx";
+import { StudentDashboard } from "@pages/student/student_dashboard.jsx";
+import { useLocation } from "react-router-dom";
 
 const App = () => {
-  return (
-    <BrowserRouter>
-      <Toaster position="top-center" reverseOrder={true} />
-      <NavigationBar />
+    return (
+        <BrowserRouter>
+            <AppContent />
+        </BrowserRouter>
+    );
+};
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route element={<PrivateRoute />}>
-          <Route path="/teacher-profile" element={<TeacherProfile />} />
-            <Route path="/student-profile" element={<StudentProfile />} />
-        </Route>
-      </Routes>
-      <Footer />
-    </BrowserRouter>
-  );
+const AppContent = () => {
+    const location = useLocation();
+
+    const hideHeaderFooter =
+        location.pathname === "/teacher-dashboard" || location.pathname === "/student-dashboard";
+
+    return (
+        <>
+            <Toaster position="top-center" reverseOrder={true} />
+            {!hideHeaderFooter && <NavigationBar />}
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route element={<PrivateRoute />}>
+                    <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+                    <Route path="/student-dashboard" element={<StudentDashboard />} />
+                </Route>
+            </Routes>
+            {!hideHeaderFooter && <Footer />}
+        </>
+    );
 };
 
 export default App;
