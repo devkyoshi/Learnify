@@ -1,7 +1,6 @@
 import { Typography } from "@material-tailwind/react";
 import logo from "@assets/images/logo.png";
 
-
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
   return (

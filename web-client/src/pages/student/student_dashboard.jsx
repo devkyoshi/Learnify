@@ -1,5 +1,3 @@
 export const StudentDashboard = () => {
-    return (
-        <div>Student Profile</div>
-    )
-}
+  return <div>Student Profile</div>;
+};

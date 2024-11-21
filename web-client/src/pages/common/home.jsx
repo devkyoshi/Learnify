@@ -8,7 +8,6 @@ import {
 } from "@material-tailwind/react";
 import PropTypes from "prop-types";
 
-
 export const Home = () => {
   return (
     <div className={"w-full"}>
@@ -23,8 +22,8 @@ export const Home = () => {
         </Typography>
 
         <Typography className="mt-2  text-sm text-center max-w-lg mx-auto text-secondary md:text-sm lg:text-sm">
-          Discover a world of opportunities with Learnify. Whether you&#39;re here
-          to learn new skills or inspire others, our platform provides the
+          Discover a world of opportunities with Learnify. Whether you&#39;re
+          here to learn new skills or inspire others, our platform provides the
           resources, guidance, and community you need to succeed. Join us and
           take the next step toward reaching your goals.
         </Typography>
@@ -88,8 +87,8 @@ const JoinUsCards = ({ image, topic, details, button }) => {
 };
 
 JoinUsCards.propTypes = {
-    image: PropTypes.string,
-    topic: PropTypes.string,
-    details: PropTypes.string,
-    button: PropTypes.string,
-}
+  image: PropTypes.string,
+  topic: PropTypes.string,
+  details: PropTypes.string,
+  button: PropTypes.string,
+};

@@ -19,7 +19,7 @@ import LoginCard from "@pages/authentication/login";
 import { getUser } from "../utils/cookie_utils";
 import defaultProfile from "@assets/images/default_profile.jpg";
 import { logout } from "../controllers/auth.controller";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const profileMenu = [
   { title: "Dashboard", icon: <UilUser size={20} /> },
@@ -94,9 +94,15 @@ export const NavigationBar = () => {
               <div className="absolute top-16 right-4 w-48 bg-white rounded-lg shadow-lg p-2">
                 {profileMenu.map((menu) => (
                   <div
-                    onClick={menu.title === "Logout" ? handleLogout
-                        : ((menu.title === "Dashboard" && user.role === "TEACHER") ? () => navigate("/teacher-dashboard")
-                        : ((menu.title === "Dashboard" && user.role === "STUDENT") ? () => navigate("/student-dashboard") : null))}
+                    onClick={
+                      menu.title === "Logout"
+                        ? handleLogout
+                        : menu.title === "Dashboard" && user.role === "TEACHER"
+                        ? () => navigate("/teacher-dashboard")
+                        : menu.title === "Dashboard" && user.role === "STUDENT"
+                        ? () => navigate("/student-dashboard")
+                        : null
+                    }
                     key={menu.title}
                     className=" flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer rounded-lg hover:text-primary text-secondary "
                   >

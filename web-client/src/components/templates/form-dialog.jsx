@@ -36,9 +36,8 @@ export default function FormDialogTemplate({ isOpen, onClose, children }) {
   );
 }
 
-
 FormDialogTemplate.propTypes = {
-    isOpen: propTypes.bool.isRequired,
-    onClose: propTypes.func.isRequired,
-    children: propTypes.node.isRequired,
-}
+  isOpen: propTypes.bool.isRequired,
+  onClose: propTypes.func.isRequired,
+  children: propTypes.node.isRequired,
+};
