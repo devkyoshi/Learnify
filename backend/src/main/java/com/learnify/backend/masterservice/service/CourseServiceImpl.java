@@ -3,6 +3,7 @@ package com.learnify.backend.masterservice.service;
 import com.learnify.backend.common.BaseResponse;
 import com.learnify.backend.common.constants.*;
 import com.learnify.backend.common.exceptions.CourseAlreadyExistException;
+import com.learnify.backend.common.exceptions.CourseNotFoundException;
 import com.learnify.backend.common.exceptions.FieldsEmptyException;
 import com.learnify.backend.common.exceptions.UserNotFoundException;
 import com.learnify.backend.course.dto.CourseRequestDTO;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -79,6 +81,98 @@ public class CourseServiceImpl implements CourseService{
         }catch (Exception e) {
             log.error("Error while saving course: {}", e.getMessage());
            return new BaseResponse<>(ErrorCodes.UNKNOWN_ERROR);
+        }
+    }
+
+    @Override
+    public BaseResponse<Boolean> updateCourse(Long courseId, CourseRequestDTO course) {
+
+        try {
+            //check if course is null
+            if(courseId == null) {
+                throw new FieldsEmptyException("Course ID", "Please provide course ID");
+            }
+            //get existing course
+            Optional<Course> existingCourse = courseRepository.findByCourseId(courseId);
+
+            if (existingCourse.isEmpty()) {
+                throw new CourseNotFoundException(courseId, course.getTitle());
+            }
+            //check if created teacher is the same as the provided teacher
+            if (course.getTeacherId() != null && !course.getTeacherId().isEmpty()) {
+                if (!existingCourse.get().getTeacher().getId().equals(Integer.valueOf(course.getTeacherId()))) {
+                    throw new IllegalAccessException("User not allowed to update course");
+                }
+            }
+            //update course by provided details except teacher and missing fields
+            if (course.getTitle() != null && !course.getTitle().isEmpty()) {
+                existingCourse.get().setTitle(course.getTitle());
+            }
+            if (course.getDescription() != null && !course.getDescription().isEmpty()) {
+                existingCourse.get().setDescription(course.getDescription());
+            }
+            if (course.getPassword() != null && !course.getPassword().isEmpty()) {
+                existingCourse.get().setPassword(passwordEncoder.encode(course.getPassword()));
+            }
+            if (course.getGrade() != null && !course.getGrade().isEmpty()) {
+                existingCourse.get().setGrade(Grade.valueOf(course.getGrade()));
+            }
+            if (course.getStatus() != null && !course.getStatus().isEmpty()) {
+                existingCourse.get().setStatus(CourseStatus.valueOf(course.getStatus()));
+            }
+            existingCourse.get().setUpdatedAt(LocalDateTime.now());
+
+            courseRepository.save(existingCourse.get());
+            log.info("Course updated successfully: {}", courseId);
+            return new BaseResponse<>(SuccessCodes.COURSE_UPDATED);
+        }catch (CourseNotFoundException e){
+            log.error("Course not found: {}", courseId);
+            return new BaseResponse<>(ErrorCodes.COURSE_NOT_FOUND);
+        } catch (IllegalAccessException e) {
+            log.error("User not allowed to update course: {}", courseId);
+            return new BaseResponse<>(ErrorCodes.NOT_AUTHORIZED);
+        } catch (FieldsEmptyException e) {
+            log.error("Course details for updating are missing or incomplete: {}", e.getMessage());
+            return new BaseResponse<>(ErrorCodes.COURSE_WITH_MISSING_FIELDS);
+        }catch (Exception e) {
+            log.error("Error while updating course: {}", e.getMessage());
+            return new BaseResponse<>(ErrorCodes.UNKNOWN_ERROR);
+        }
+    }
+
+    @Override
+    public BaseResponse<Boolean> deleteCourse(Long courseId, Integer userId) {
+        try {
+            //check if course is null
+            if(courseId == null) {
+                throw new FieldsEmptyException("Course ID", "Please provide course ID");
+            }
+            //get existing course
+            Optional<Course> existingCourse = courseRepository.findByCourseId(courseId);
+
+            if (existingCourse.isEmpty()) {
+                throw new CourseNotFoundException(courseId, null);
+            }
+
+            //check if created teacher is the same as the provided teacher
+            if (userId != null) {
+                if (!existingCourse.get().getTeacher().getId().equals(userId)) {
+                    throw new IllegalAccessException("User not allowed to delete course");
+                }
+            }
+            //delete course
+            courseRepository.delete(existingCourse.get());
+            log.info("Course deleted successfully: {}", courseId);
+            return new BaseResponse<>(SuccessCodes.COURSE_DELETED);
+        }catch (CourseNotFoundException e){
+            log.error("Course with CourseID: {}", courseId + " not found");
+            return new BaseResponse<>(ErrorCodes.COURSE_NOT_FOUND);
+        } catch (FieldsEmptyException e) {
+            log.error("Course ID is missing: {}", e.getMessage());
+            return new BaseResponse<>(ErrorCodes.COURSE_WITH_MISSING_FIELDS);
+        } catch (IllegalAccessException e) {
+            log.error("User not allowed to delete course: {}", courseId);
+            return new BaseResponse<>(ErrorCodes.NOT_AUTHORIZED);
         }
     }
 }

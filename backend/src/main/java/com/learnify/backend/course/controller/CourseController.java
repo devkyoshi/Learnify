@@ -7,9 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
@@ -21,6 +19,20 @@ public class CourseController extends BaseController {
         log.info("Creating course: {}", courseRequestDTO.getTitle());
         var response = masterService.saveCourse(courseRequestDTO);
         return response.success()? ResponseEntity.ok(response): ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @PostMapping("/update/{courseId}")
+    public ResponseEntity<BaseResponse<Boolean>> updateCourse(@PathVariable Long courseId, @RequestBody CourseRequestDTO courseRequestDTO) {
+        log.info("Updating course: {}", courseRequestDTO.getTitle() + " with courseId: " + courseId);
+        var response = masterService.updateCourse(courseId, courseRequestDTO);
+        return response.success()? ResponseEntity.ok(response): ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @GetMapping("/delete/{userId}/{courseId}")
+    public ResponseEntity<BaseResponse<Boolean>> deleteCourse(@PathVariable Long courseId , @PathVariable Integer userId) {
+        log.info("Deleting course with courseId: {}", courseId);
+        var response = masterService.deleteCourse(courseId , userId);
+        return response.success()? ResponseEntity.ok(response): ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
 }

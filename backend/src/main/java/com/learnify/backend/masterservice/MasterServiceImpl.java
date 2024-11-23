@@ -23,4 +23,14 @@ public class MasterServiceImpl implements MasterService {
     public BaseResponse<Boolean> saveCourse(CourseRequestDTO courseRequestDTO) {
         return courseService.saveCourse(courseRequestDTO);
     }
+
+    @Override
+    public BaseResponse<Boolean> updateCourse(Long courseId, CourseRequestDTO courseRequestDTO) {
+        return courseService.updateCourse(courseId, courseRequestDTO);
+    }
+
+    @Override
+    public BaseResponse<Boolean> deleteCourse(Long courseId , Integer userId) {
+        return courseService.deleteCourse(courseId , userId);
+    }
 }

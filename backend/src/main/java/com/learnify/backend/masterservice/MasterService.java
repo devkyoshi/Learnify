@@ -5,5 +5,7 @@ import com.learnify.backend.course.dto.CourseRequestDTO;
 
 public interface MasterService {
     //Course Services
-    public BaseResponse<Boolean> saveCourse(CourseRequestDTO course);
+    BaseResponse<Boolean> saveCourse(CourseRequestDTO course);
+    BaseResponse<Boolean> updateCourse(Long courseId, CourseRequestDTO course);
+    BaseResponse<Boolean> deleteCourse(Long courseId, Integer userID);
 }

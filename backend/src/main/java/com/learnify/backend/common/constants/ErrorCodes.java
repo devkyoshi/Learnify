@@ -10,10 +10,12 @@ public enum ErrorCodes {
     USER_NOT_FOUND("User Not Found"),
     USER_ALREADY_EXISTS("User Already Exists"),
     USER_REGISTRATION_FAILED("User Registration Failed"),
+    NOT_AUTHORIZED("You are not authorized to perform this action"),
 
     TEACHER_NOT_FOUND("Teacher is not registered with the system"),
 
     COURSE_WITH_MISSING_FIELDS("Course details are missing or incomplete"),
+    COURSE_NOT_FOUND("Course Not Found"),
     COURSE_ALREADY_EXISTS("Course Already Exists");
 
     private final String message;
