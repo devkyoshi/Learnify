@@ -1,13 +1,19 @@
 package com.learnify.backend.masterservice.dao;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class LearningMaterials {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class LearningMaterial {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,7 +34,7 @@ public class LearningMaterials {
     private LocalDateTime lastModifiedAt = LocalDateTime.now();
 
     @Column(nullable = false)
-    private Long uploadedBy;
+    private Integer uploadedBy;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)

@@ -38,7 +38,7 @@ public class Course {
     private Teacher teacher;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private Set<LearningMaterials> learningMaterials;
+    private Set<LearningMaterial> learningMaterials;
 
     @ManyToMany
     @JoinTable(

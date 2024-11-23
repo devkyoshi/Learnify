@@ -7,17 +7,20 @@ import com.learnify.backend.common.exceptions.CourseNotFoundException;
 import com.learnify.backend.common.exceptions.FieldsEmptyException;
 import com.learnify.backend.common.exceptions.UserNotFoundException;
 import com.learnify.backend.course.dto.CourseRequestDTO;
+import com.learnify.backend.course.dto.LearningMaterialRequestDTO;
 import com.learnify.backend.masterservice.dao.Course;
+import com.learnify.backend.masterservice.dao.LearningMaterial;
 import com.learnify.backend.masterservice.dao.Teacher;
 import com.learnify.backend.masterservice.repository.CourseRepository;
 import com.learnify.backend.masterservice.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+
 
 @Slf4j
 @Service
@@ -31,17 +34,8 @@ public class CourseServiceImpl implements CourseService{
     public BaseResponse<Boolean> saveCourse(CourseRequestDTO course) {
         try {
             //check if course is null
-            if (course.getTitle() == null || course.getTitle().isEmpty() ||
-                    course.getTeacherId() == null || course.getTeacherId().isEmpty() ||
-                    course.getDescription() == null || course.getDescription().isEmpty() ||
-                    course.getPassword() == null || course.getPassword().isEmpty() ||
-                    course.getGrade() == null || course.getGrade().isEmpty() )  {
-
-                throw new FieldsEmptyException(ErrorCodes.COURSE_WITH_MISSING_FIELDS.getMessage());
-            }
-
+            validateCourseRequest(course);
             Integer teacherId = Integer.valueOf(course.getTeacherId());
-
             //get teacher
             if (!userRepository.existsByIdAndRole(teacherId, Role.TEACHER)) {
                 throw new UserNotFoundException("Teacher", course.getTeacherId());
@@ -68,7 +62,6 @@ public class CourseServiceImpl implements CourseService{
             log.info("Course created successfully: {}", course.getTitle());
             return new BaseResponse<>(SuccessCodes.COURSE_CREATED);
 
-
         }catch (UserNotFoundException e) {
             log.error("Teacher not found: {}", course.getTeacherId());
             return new BaseResponse<>(ErrorCodes.TEACHER_NOT_FOUND);
@@ -93,36 +86,34 @@ public class CourseServiceImpl implements CourseService{
                 throw new FieldsEmptyException("Course ID", "Please provide course ID");
             }
             //get existing course
-            Optional<Course> existingCourse = courseRepository.findByCourseId(courseId);
+            Course existingCourse = courseRepository.findByCourseId(courseId)
+                    .orElseThrow(() -> new CourseNotFoundException(courseId, null));
 
-            if (existingCourse.isEmpty()) {
-                throw new CourseNotFoundException(courseId, course.getTitle());
-            }
             //check if created teacher is the same as the provided teacher
             if (course.getTeacherId() != null && !course.getTeacherId().isEmpty()) {
-                if (!existingCourse.get().getTeacher().getId().equals(Integer.valueOf(course.getTeacherId()))) {
+                if (!existingCourse.getTeacher().getId().equals(Integer.valueOf(course.getTeacherId()))) {
                     throw new IllegalAccessException("User not allowed to update course");
                 }
             }
             //update course by provided details except teacher and missing fields
             if (course.getTitle() != null && !course.getTitle().isEmpty()) {
-                existingCourse.get().setTitle(course.getTitle());
+                existingCourse.setTitle(course.getTitle());
             }
             if (course.getDescription() != null && !course.getDescription().isEmpty()) {
-                existingCourse.get().setDescription(course.getDescription());
+                existingCourse.setDescription(course.getDescription());
             }
             if (course.getPassword() != null && !course.getPassword().isEmpty()) {
-                existingCourse.get().setPassword(passwordEncoder.encode(course.getPassword()));
+                existingCourse.setPassword(passwordEncoder.encode(course.getPassword()));
             }
             if (course.getGrade() != null && !course.getGrade().isEmpty()) {
-                existingCourse.get().setGrade(Grade.valueOf(course.getGrade()));
+                existingCourse.setGrade(Grade.valueOf(course.getGrade()));
             }
             if (course.getStatus() != null && !course.getStatus().isEmpty()) {
-                existingCourse.get().setStatus(CourseStatus.valueOf(course.getStatus()));
+                existingCourse.setStatus(CourseStatus.valueOf(course.getStatus()));
             }
-            existingCourse.get().setUpdatedAt(LocalDateTime.now());
+            existingCourse.setUpdatedAt(LocalDateTime.now());
 
-            courseRepository.save(existingCourse.get());
+            courseRepository.save(existingCourse);
             log.info("Course updated successfully: {}", courseId);
             return new BaseResponse<>(SuccessCodes.COURSE_UPDATED);
         }catch (CourseNotFoundException e){
@@ -148,20 +139,18 @@ public class CourseServiceImpl implements CourseService{
                 throw new FieldsEmptyException("Course ID", "Please provide course ID");
             }
             //get existing course
-            Optional<Course> existingCourse = courseRepository.findByCourseId(courseId);
+            Course existingCourse = courseRepository.findByCourseId(courseId)
+                    .orElseThrow(() -> new CourseNotFoundException(courseId, null));
 
-            if (existingCourse.isEmpty()) {
-                throw new CourseNotFoundException(courseId, null);
-            }
 
             //check if created teacher is the same as the provided teacher
             if (userId != null) {
-                if (!existingCourse.get().getTeacher().getId().equals(userId)) {
+                if (!existingCourse.getTeacher().getId().equals(userId)) {
                     throw new IllegalAccessException("User not allowed to delete course");
                 }
             }
             //delete course
-            courseRepository.delete(existingCourse.get());
+            courseRepository.delete(existingCourse);
             log.info("Course deleted successfully: {}", courseId);
             return new BaseResponse<>(SuccessCodes.COURSE_DELETED);
         }catch (CourseNotFoundException e){
@@ -173,6 +162,94 @@ public class CourseServiceImpl implements CourseService{
         } catch (IllegalAccessException e) {
             log.error("User not allowed to delete course: {}", courseId);
             return new BaseResponse<>(ErrorCodes.NOT_AUTHORIZED);
+        }
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse<Boolean> addLearningMaterial(LearningMaterialRequestDTO learningMaterialRequestDTO) {
+        try {
+            // Validate input fields
+            validateLearningMaterialRequest(learningMaterialRequestDTO);
+
+            // Get existing course
+            Course course = courseRepository.findByCourseId(learningMaterialRequestDTO.getCourseId())
+                    .orElseThrow(() -> new CourseNotFoundException(learningMaterialRequestDTO.getCourseId(), null));
+
+            // Check user authorization
+            if (!learningMaterialRequestDTO.getUploadedBy().equals(course.getTeacher().getId())) {
+                throw new IllegalAccessException("User not allowed to add learning material for this course");
+            }
+
+            // Create new LearningMaterial
+            LearningMaterial newLearningMaterial = LearningMaterial.builder()
+                    .fileName(learningMaterialRequestDTO.getFileName())
+                    .fileUrl(learningMaterialRequestDTO.getFileUrl())
+                    .fileType(learningMaterialRequestDTO.getFileType())
+                    .fileSize(learningMaterialRequestDTO.getFileSize())
+                    .uploadedAt(LocalDateTime.now())
+                    .lastModifiedAt(LocalDateTime.now())
+                    .uploadedBy(learningMaterialRequestDTO.getUploadedBy())
+                    .course(course)
+                    .build();
+
+            course.getLearningMaterials().add(newLearningMaterial);
+            courseRepository.save(course);
+
+            log.info("Learning material added successfully: {}", learningMaterialRequestDTO.getFileName());
+            return new BaseResponse<>(SuccessCodes.LEARNING_MATERIAL_ADDED);
+
+        } catch (FieldsEmptyException e) {
+            log.error("Missing fields for learning material: {}", e.getMessage());
+            return new BaseResponse<>(ErrorCodes.COURSE_WITH_MISSING_FIELDS);
+        } catch (IllegalAccessException e) {
+            log.error("Unauthorized access: {}", e.getMessage());
+            return new BaseResponse<>(ErrorCodes.NOT_AUTHORIZED);
+        } catch (CourseNotFoundException e) {
+            log.error("Course is not found: {}", e.getMessage());
+            return new BaseResponse<>(ErrorCodes.COURSE_NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Unexpected error while adding learning material: {}", e.getMessage());
+            return new BaseResponse<>(ErrorCodes.UNKNOWN_ERROR);
+        }
+    }
+
+    private void validateLearningMaterialRequest(LearningMaterialRequestDTO request) throws FieldsEmptyException {
+        if (request.getCourseId() == null) {
+            throw new FieldsEmptyException("Course ID", "Please provide course ID");
+        }
+        if (request.getFileName() == null || request.getFileName().isEmpty()) {
+            throw new FieldsEmptyException("File Name", "File name is missing or empty");
+        }
+        if (request.getFileUrl() == null || request.getFileUrl().isEmpty()) {
+            throw new FieldsEmptyException("File URL", "File URL is missing or empty");
+        }
+        if (request.getFileType() == null || request.getFileType().isEmpty()) {
+            throw new FieldsEmptyException("File Type", "File type is missing or empty");
+        }
+        if (request.getFileSize() == null) {
+            throw new FieldsEmptyException("File Size", "File size is missing");
+        }
+        if (request.getUploadedBy() == null) {
+            throw new FieldsEmptyException("Uploaded By", "Uploader ID is missing");
+        }
+    }
+
+    private void validateCourseRequest(CourseRequestDTO course) throws FieldsEmptyException {
+        if (course.getTitle() == null || course.getTitle().isEmpty()) {
+            throw new FieldsEmptyException("Course Title", "Course title is missing or empty");
+        }
+        if (course.getDescription() == null || course.getDescription().isEmpty()) {
+            throw new FieldsEmptyException("Course Description", "Course description is missing or empty");
+        }
+        if (course.getPassword() == null || course.getPassword().isEmpty()) {
+            throw new FieldsEmptyException("Course Password", "Course password is missing or empty");
+        }
+        if (course.getGrade() == null || course.getGrade().isEmpty()) {
+            throw new FieldsEmptyException("Course Grade", "Course grade is missing or empty");
+        }
+        if (course.getTeacherId() == null || course.getTeacherId().isEmpty()) {
+            throw new FieldsEmptyException("Teacher ID", "Teacher ID is missing or empty");
         }
     }
 }
