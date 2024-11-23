@@ -7,10 +7,8 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class BaseController {
 
+    @Autowired
     protected MasterService masterService;
 
-    @Autowired
-    public BaseController (MasterService masterService) {
-        this.masterService = masterService;
-    }
+
 }

@@ -1,6 +1,7 @@
 package com.learnify.backend.security.service;
 
 import com.learnify.backend.common.BaseResponse;
+import com.learnify.backend.common.constants.Grade;
 import com.learnify.backend.common.constants.Role;
 import com.learnify.backend.common.exceptions.UserAlreadyExistException;
 import com.learnify.backend.common.exceptions.UserNotFoundException;
@@ -19,6 +20,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.learnify.backend.common.constants.ErrorCodes.USER_ALREADY_EXISTS;
 import static com.learnify.backend.common.constants.ErrorCodes.USER_REGISTRATION_FAILED;
@@ -61,7 +66,7 @@ public class AuthenticationService {
                     .district(studentRegisterRequest.getDistrict())
                     .zip(studentRegisterRequest.getZip())
                     .profilePic(studentRegisterRequest.getProfilePic())
-                    .grade(studentRegisterRequest.getGrade())
+                    .grade(Grade.valueOf(studentRegisterRequest.getGrade()))
                     .build();
             // Save the student
             studentRepository.save(student);
@@ -96,6 +101,18 @@ public class AuthenticationService {
                throw new UserAlreadyExistException(teacherRegisterRequest.getUsername());
            }
 
+           if(teacherRegisterRequest.getGradesTeaching() == null || teacherRegisterRequest.getGradesTeaching().isEmpty()) {
+               log.error("Grades teaching is required");
+               //TODO: Add error code
+               return new BaseResponse<>(false, null, "Grades cannot be empty");
+           }
+
+           Set<Grade> grades = teacherRegisterRequest.getGradesTeaching()
+                     .stream()
+                     .filter(Objects::nonNull)
+                     .collect(Collectors.toSet());
+
+
            Teacher teacher = Teacher.builder()
                    .firstName(teacherRegisterRequest.getFirstName())
                    .lastName(teacherRegisterRequest.getLastName())
@@ -112,7 +129,7 @@ public class AuthenticationService {
                    .qualification(teacherRegisterRequest.getQualification())
                    .experience(teacherRegisterRequest.getExperience())
                    .subject(teacherRegisterRequest.getSubject())
-                   .gradesTeaching(teacherRegisterRequest.getGradesTeaching())
+                   .gradesTeaching(grades)
                    .paymentFee(teacherRegisterRequest.getPaymentFee())
                    .build();
 

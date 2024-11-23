@@ -1,9 +1,11 @@
 package com.learnify.backend.masterservice.dao;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import com.learnify.backend.common.constants.Grade;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.Set;
 
 @Entity
 @DiscriminatorValue("STUDENT")
@@ -13,5 +15,10 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 public class Student extends User{
-    private String grade;
+
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
+
+    @ManyToMany(mappedBy = "students")
+    private Set<Course> enrolledCourses;
 }

@@ -3,6 +3,7 @@ package com.learnify.backend.common;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.learnify.backend.common.constants.ErrorCodes;
+import com.learnify.backend.common.constants.SuccessCodes;
 
 @JsonSerialize
 public record BaseResponse<T>(
@@ -46,6 +47,10 @@ public record BaseResponse<T>(
         this(null, false, errorCode.getCode(), errorCode.getMessage());
     }
 
+    //Used when we want to send success response with success code
+    public BaseResponse(SuccessCodes successCode){
+        this(null, true, successCode.getCode(), successCode.getMessage());
+    }
 
     public BaseResponse(T data, Boolean success, String errorCode, String message){
         this.data = data;

@@ -1,5 +1,6 @@
 package com.learnify.backend.teacher.dto;
 
+import com.learnify.backend.common.constants.Grade;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,6 @@ public class TeacherRegisterRequest {
     private String qualification;
     private String experience;
     private String subject;
-    private List<String> gradesTeaching;
+    private List<Grade> gradesTeaching;
     private double paymentFee;
 }
