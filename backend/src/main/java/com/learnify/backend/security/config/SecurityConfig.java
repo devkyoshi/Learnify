@@ -55,6 +55,7 @@ public class SecurityConfig{
         config.addAllowedOrigin("http://localhost:5173");
         config.addAllowedHeader("*"); //Allow all headers
         config.addAllowedMethod("*"); //Allow all methods (GET, POST, PUT, DELETE, etc.)
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config); //Apply this configuration to all routes

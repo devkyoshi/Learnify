@@ -10,4 +10,5 @@ public interface MasterService {
     BaseResponse<Boolean> updateCourse(Long courseId, CourseRequestDTO course);
     BaseResponse<Boolean> deleteCourse(Long courseId, Integer userID);
     BaseResponse<Boolean> addLearningMaterial(LearningMaterialRequestDTO learningMaterialRequestDTO);
+    BaseResponse<Boolean> deleteLearningMaterial(Long learningMaterialId, Integer userID);
 }

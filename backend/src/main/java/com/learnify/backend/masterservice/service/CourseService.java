@@ -9,4 +9,5 @@ public interface CourseService {
     BaseResponse<Boolean> updateCourse(Long courseId, CourseRequestDTO course);
     BaseResponse<Boolean> deleteCourse(Long courseId , Integer userId);
     BaseResponse<Boolean> addLearningMaterial(LearningMaterialRequestDTO learningMaterialRequestDTO);
+    BaseResponse<Boolean> deleteLearningMaterial(Long learningMaterialId, Integer userID);
 }

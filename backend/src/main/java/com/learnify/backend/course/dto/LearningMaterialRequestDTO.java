@@ -1,6 +1,5 @@
 package com.learnify.backend.course.dto;
 
-import com.learnify.backend.masterservice.dao.Course;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;

@@ -9,7 +9,7 @@ import com.learnify.backend.common.constants.SuccessCodes;
 public record BaseResponse<T>(
         T data,
         Boolean success,
-        String errorCode,
+        String code,
         String message
 ) {
 
@@ -52,10 +52,10 @@ public record BaseResponse<T>(
         this(null, true, successCode.getCode(), successCode.getMessage());
     }
 
-    public BaseResponse(T data, Boolean success, String errorCode, String message){
+    public BaseResponse(T data, Boolean success, String code, String message){
         this.data = data;
         this.success = success;
-        this.errorCode = errorCode;
+        this.code = code;
         this.message = message;
     }
 

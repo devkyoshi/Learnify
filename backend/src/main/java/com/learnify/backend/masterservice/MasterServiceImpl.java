@@ -3,7 +3,6 @@ package com.learnify.backend.masterservice;
 import com.learnify.backend.common.BaseResponse;
 import com.learnify.backend.course.dto.CourseRequestDTO;
 import com.learnify.backend.course.dto.LearningMaterialRequestDTO;
-import com.learnify.backend.masterservice.dao.Course;
 import com.learnify.backend.masterservice.service.CourseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +37,10 @@ public class MasterServiceImpl implements MasterService {
     @Override
     public BaseResponse<Boolean> addLearningMaterial(LearningMaterialRequestDTO learningMaterialRequestDTO) {
         return courseService.addLearningMaterial(learningMaterialRequestDTO);
+    }
+
+    @Override
+    public BaseResponse<Boolean> deleteLearningMaterial(Long learningMaterialId, Integer userID) {
+        return courseService.deleteLearningMaterial(learningMaterialId, userID);
     }
 }

@@ -37,7 +37,7 @@ public class Course {
     @JoinColumn(name = "user_id" , nullable = false)
     private Teacher teacher;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL , orphanRemoval = true)
     private Set<LearningMaterial> learningMaterials;
 
     @ManyToMany

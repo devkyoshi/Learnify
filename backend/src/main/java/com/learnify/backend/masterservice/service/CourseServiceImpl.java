@@ -3,8 +3,8 @@ package com.learnify.backend.masterservice.service;
 import com.learnify.backend.common.BaseResponse;
 import com.learnify.backend.common.constants.*;
 import com.learnify.backend.common.exceptions.CourseAlreadyExistException;
-import com.learnify.backend.common.exceptions.CourseNotFoundException;
 import com.learnify.backend.common.exceptions.FieldsEmptyException;
+import com.learnify.backend.common.exceptions.ResourceNotFoundException;
 import com.learnify.backend.common.exceptions.UserNotFoundException;
 import com.learnify.backend.course.dto.CourseRequestDTO;
 import com.learnify.backend.course.dto.LearningMaterialRequestDTO;
@@ -12,6 +12,7 @@ import com.learnify.backend.masterservice.dao.Course;
 import com.learnify.backend.masterservice.dao.LearningMaterial;
 import com.learnify.backend.masterservice.dao.Teacher;
 import com.learnify.backend.masterservice.repository.CourseRepository;
+import com.learnify.backend.masterservice.repository.LearningMaterialRepository;
 import com.learnify.backend.masterservice.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -29,6 +29,7 @@ public class CourseServiceImpl implements CourseService{
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final LearningMaterialRepository learningMaterialRepository;
 
     @Override
     public BaseResponse<Boolean> saveCourse(CourseRequestDTO course) {
@@ -67,7 +68,7 @@ public class CourseServiceImpl implements CourseService{
             return new BaseResponse<>(ErrorCodes.TEACHER_NOT_FOUND);
         } catch (FieldsEmptyException e) {
             log.error("Course details are missing or incomplete: {}", course.getTitle());
-            return new BaseResponse<>(ErrorCodes.COURSE_WITH_MISSING_FIELDS);
+            return new BaseResponse<>(ErrorCodes.MISSING_FIELDS);
         } catch (CourseAlreadyExistException e) {
             log.error("Course already exists: {}", course.getTitle());
             return new BaseResponse<>(ErrorCodes.COURSE_ALREADY_EXISTS);
@@ -87,7 +88,7 @@ public class CourseServiceImpl implements CourseService{
             }
             //get existing course
             Course existingCourse = courseRepository.findByCourseId(courseId)
-                    .orElseThrow(() -> new CourseNotFoundException(courseId, null));
+                    .orElseThrow(() -> new ResourceNotFoundException("Course",courseId));
 
             //check if created teacher is the same as the provided teacher
             if (course.getTeacherId() != null && !course.getTeacherId().isEmpty()) {
@@ -116,7 +117,7 @@ public class CourseServiceImpl implements CourseService{
             courseRepository.save(existingCourse);
             log.info("Course updated successfully: {}", courseId);
             return new BaseResponse<>(SuccessCodes.COURSE_UPDATED);
-        }catch (CourseNotFoundException e){
+        }catch (ResourceNotFoundException e){
             log.error("Course not found: {}", courseId);
             return new BaseResponse<>(ErrorCodes.COURSE_NOT_FOUND);
         } catch (IllegalAccessException e) {
@@ -124,7 +125,7 @@ public class CourseServiceImpl implements CourseService{
             return new BaseResponse<>(ErrorCodes.NOT_AUTHORIZED);
         } catch (FieldsEmptyException e) {
             log.error("Course details for updating are missing or incomplete: {}", e.getMessage());
-            return new BaseResponse<>(ErrorCodes.COURSE_WITH_MISSING_FIELDS);
+            return new BaseResponse<>(ErrorCodes.MISSING_FIELDS);
         }catch (Exception e) {
             log.error("Error while updating course: {}", e.getMessage());
             return new BaseResponse<>(ErrorCodes.UNKNOWN_ERROR);
@@ -140,7 +141,7 @@ public class CourseServiceImpl implements CourseService{
             }
             //get existing course
             Course existingCourse = courseRepository.findByCourseId(courseId)
-                    .orElseThrow(() -> new CourseNotFoundException(courseId, null));
+                    .orElseThrow(() -> new ResourceNotFoundException("Course", courseId));
 
 
             //check if created teacher is the same as the provided teacher
@@ -153,12 +154,12 @@ public class CourseServiceImpl implements CourseService{
             courseRepository.delete(existingCourse);
             log.info("Course deleted successfully: {}", courseId);
             return new BaseResponse<>(SuccessCodes.COURSE_DELETED);
-        }catch (CourseNotFoundException e){
+        }catch (ResourceNotFoundException e){
             log.error("Course with CourseID: {}", courseId + " not found");
             return new BaseResponse<>(ErrorCodes.COURSE_NOT_FOUND);
         } catch (FieldsEmptyException e) {
             log.error("Course ID is missing: {}", e.getMessage());
-            return new BaseResponse<>(ErrorCodes.COURSE_WITH_MISSING_FIELDS);
+            return new BaseResponse<>(ErrorCodes.MISSING_FIELDS);
         } catch (IllegalAccessException e) {
             log.error("User not allowed to delete course: {}", courseId);
             return new BaseResponse<>(ErrorCodes.NOT_AUTHORIZED);
@@ -174,7 +175,7 @@ public class CourseServiceImpl implements CourseService{
 
             // Get existing course
             Course course = courseRepository.findByCourseId(learningMaterialRequestDTO.getCourseId())
-                    .orElseThrow(() -> new CourseNotFoundException(learningMaterialRequestDTO.getCourseId(), null));
+                    .orElseThrow(() -> new ResourceNotFoundException("Course",learningMaterialRequestDTO.getCourseId()));
 
             // Check user authorization
             if (!learningMaterialRequestDTO.getUploadedBy().equals(course.getTeacher().getId())) {
@@ -201,15 +202,54 @@ public class CourseServiceImpl implements CourseService{
 
         } catch (FieldsEmptyException e) {
             log.error("Missing fields for learning material: {}", e.getMessage());
-            return new BaseResponse<>(ErrorCodes.COURSE_WITH_MISSING_FIELDS);
+            return new BaseResponse<>(ErrorCodes.MISSING_FIELDS);
         } catch (IllegalAccessException e) {
             log.error("Unauthorized access: {}", e.getMessage());
             return new BaseResponse<>(ErrorCodes.NOT_AUTHORIZED);
-        } catch (CourseNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             log.error("Course is not found: {}", e.getMessage());
             return new BaseResponse<>(ErrorCodes.COURSE_NOT_FOUND);
         } catch (Exception e) {
             log.error("Unexpected error while adding learning material: {}", e.getMessage());
+            return new BaseResponse<>(ErrorCodes.UNKNOWN_ERROR);
+        }
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse<Boolean> deleteLearningMaterial(Long learningMaterialId, Integer userID) {
+        try{
+
+            //check if learning material id is null
+            if(learningMaterialId == null) {
+                throw new FieldsEmptyException("Learning Material ID", "Please provide learning material ID");
+            }
+            //get existing learning material
+            LearningMaterial existingLearningMaterial = learningMaterialRepository.findLearningMaterialByMaterialId(learningMaterialId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Resource", learningMaterialId));
+
+
+            Course course = existingLearningMaterial.getCourse();
+
+            if(!course.getTeacher().getId().equals(userID)){
+                throw new IllegalAccessException("User not allowed to delete this resource");
+            }
+
+            course.getLearningMaterials().remove(existingLearningMaterial);
+            courseRepository.save(course);
+
+            log.info("Learning material deleted successfully: {}", learningMaterialId);
+            return new BaseResponse<>(SuccessCodes.LEARNING_MATERIAL_DELETED);
+        }catch (ResourceNotFoundException e){
+            log.error("Learning material with LearningMaterialID: {}", learningMaterialId + " not found");
+            return new BaseResponse<>(ErrorCodes.LEARNING_MATERIAL_NOT_FOUND);
+        } catch (FieldsEmptyException e) {
+            log.error("Learning Material ID is missing: {}", e.getMessage());
+            return new BaseResponse<>(ErrorCodes.MISSING_FIELDS);
+        } catch (IllegalAccessException e) {
+            log.error("User not allowed to delete learning material: {}", learningMaterialId);
+            return new BaseResponse<>(ErrorCodes.NOT_AUTHORIZED);
+        } catch (Exception e) {
             return new BaseResponse<>(ErrorCodes.UNKNOWN_ERROR);
         }
     }

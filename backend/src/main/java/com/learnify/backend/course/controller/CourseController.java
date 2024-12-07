@@ -43,4 +43,11 @@ public class CourseController extends BaseController {
         return response.success()? ResponseEntity.ok(response): ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
+    @GetMapping("/file/delete/{userId}/{learningMaterialId}")
+    public ResponseEntity<BaseResponse<Boolean>> deleteLearningMaterial(@PathVariable Long learningMaterialId, @PathVariable Integer userId) {
+        log.info("Deleting learning material with learningMaterialId: {}", learningMaterialId);
+        var response = masterService.deleteLearningMaterial(learningMaterialId, userId);
+        return response.success()? ResponseEntity.ok(response): ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
 }

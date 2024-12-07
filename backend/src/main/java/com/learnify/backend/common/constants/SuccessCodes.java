@@ -12,6 +12,7 @@ public enum SuccessCodes {
     COURSE_CREATED("Course created successfully"),
     COURSE_UPDATED("Course updated successfully"),
     COURSE_DELETED("Course deleted successfully"),
+    LEARNING_MATERIAL_DELETED("File deleted successfully"),
     LEARNING_MATERIAL_ADDED("File added successfully");
 
     private final String message;

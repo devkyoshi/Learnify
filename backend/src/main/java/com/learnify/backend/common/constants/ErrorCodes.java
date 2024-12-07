@@ -14,7 +14,8 @@ public enum ErrorCodes {
 
     TEACHER_NOT_FOUND("Teacher is not registered with the system"),
 
-    COURSE_WITH_MISSING_FIELDS("Course details are missing or incomplete"),
+    LEARNING_MATERIAL_NOT_FOUND("Learning Material Not Found"),
+    MISSING_FIELDS("Fields are missing or incomplete"),
     COURSE_NOT_FOUND("Course Not Found"),
     COURSE_ALREADY_EXISTS("Course Already Exists");
 

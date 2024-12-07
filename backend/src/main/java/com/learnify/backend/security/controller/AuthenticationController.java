@@ -6,6 +6,7 @@ import com.learnify.backend.security.dto.AuthenticationResponse;
 import com.learnify.backend.security.service.AuthenticationService;
 import com.learnify.backend.student.dto.StudentRegistrationRequest;
 import com.learnify.backend.teacher.dto.TeacherRegisterRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,9 +40,17 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<BaseResponse<AuthenticationResponse>>login (@RequestBody AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<BaseResponse<AuthenticationResponse>>login (@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
         log.info("Logging in user: {}", authenticationRequest.getUsername());
-        var response =  authenticationService.login(authenticationRequest);
-        return response.success() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
+        BaseResponse<AuthenticationResponse> serviceResponse =  authenticationService.login(authenticationRequest);
+
+        if(serviceResponse.success()){
+            //Set JWT token in an HTTP-only, secure cookie
+            String token = serviceResponse.data().getToken();
+            response.addHeader("Set-Cookie", String.format("jwt=%s; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=%d", token, 3600)); //valid for 1hr
+        }
+
+        //Return the rest of the response (e.g., role and userId)
+        return serviceResponse.success()?ResponseEntity.ok(serviceResponse): ResponseEntity.badRequest().body(serviceResponse);
     }
 }
