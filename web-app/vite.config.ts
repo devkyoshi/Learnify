@@ -13,6 +13,7 @@ export default defineConfig({
       "@utils": path.resolve(__dirname, "./src/utils"),
       "@config": path.resolve(__dirname, "./src/config"),
       "@hooks": path.resolve(__dirname, "./src/hooks"),
+      "@services": path.resolve(__dirname, "./src/services"),
       "@constants": path.resolve(__dirname, "./src/constants"),
     },
   },
